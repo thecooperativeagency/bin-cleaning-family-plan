@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="theme-color" content="#0f1419" />
+  <title>Bin Cleaning Family Plan</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --bg2: #171d25;
+      --bg3: #1e2630;
+      --line: #2a3441;
+      --text: #e8eef4;
+      --muted: #9aa8b5;
+      --dim: #6b7a89;
+      --accent: #3dd6c6;
+      --accent2: #f0b429;
+      --good: #3ecf8e;
+      --warn: #f0b429;
+      --bad: #f07178;
+      --card: #171d25;
+      --radius: 14px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 16px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, .mono { font-family: var(--mono); font-size: 0.92em; }
+
+    /* PIN GATE */
+    #gate {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(900px 500px at 10% -10%, #1a3a36 0%, transparent 55%),
+        radial-gradient(700px 400px at 100% 0%, #2a2410 0%, transparent 50%),
+        var(--bg);
+    }
+    #gate.hidden { display: none; }
+    .gate-card {
+      width: min(420px, 100%);
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+    .gate-card h1 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .gate-card p { margin: 0 0 18px; color: var(--muted); font-size: 0.95rem; }
+    .gate-card label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--dim);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .gate-row { display: flex; gap: 10px; }
+    .gate-row input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 1.05rem;
+      letter-spacing: 0.12em;
+    }
+    .gate-row input:focus {
+      outline: 2px solid rgba(61,214,198,.35);
+      border-color: var(--accent);
+    }
+    .gate-row button, button.btn {
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #062420;
+      font-weight: 700;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .gate-row button:hover, button.btn:hover { filter: brightness(1.05); }
+    .gate-err {
+      min-height: 1.2em;
+      margin-top: 10px;
+      color: var(--bad);
+      font-size: 0.9rem;
+    }
+    .gate-note {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 0.8rem;
+    }
+
+    /* APP SHELL */
+    #app { display: none; }
+    #app.show { display: block; }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      background: rgba(15,20,25,.88);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .brand strong {
+      font-size: 0.98rem;
+      letter-spacing: -0.02em;
+    }
+    .brand span {
+      color: var(--dim);
+      font-size: 0.75rem;
+    }
+    .top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--bg2);
+      color: var(--muted);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .chip b { color: var(--accent2); font-weight: 700; }
+    button.linkish {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 0.78rem;
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 12px 10px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a {
+      flex: 0 0 auto;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      color: var(--text);
+      background: var(--bg3);
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 80px;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(61,214,198,.08), transparent 40%),
+        var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      padding: 22px 20px;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .hero p { margin: 0; color: var(--muted); max-width: 62ch; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill {
+      font-size: 0.78rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--bg);
+    }
+    .pill.good { border-color: rgba(62,207,142,.35); color: var(--good); }
+    .pill.warn { border-color: rgba(240,180,41,.35); color: var(--warn); }
+
+    section {
+      margin: 28px 0;
+      scroll-margin-top: 120px;
+    }
+    section > h2 {
+      margin: 0 0 12px;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    section > h2 .num {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); }
+    .dim { color: var(--dim); }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card {
+      grid-column: span 12;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    @media (min-width: 720px) {
+      .span-6 { grid-column: span 6; }
+      .span-4 { grid-column: span 4; }
+      .span-8 { grid-column: span 8; }
+      .span-3 { grid-column: span 3; }
+    }
+
+    .card h3 { margin-top: 0; }
+    .card ul { margin: 8px 0 0; padding-left: 1.15rem; }
+    .card li { margin: 4px 0; }
+    .price {
+      font-family: var(--mono);
+      color: var(--accent2);
+      font-weight: 700;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--dim); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    tr:last-child td { border-bottom: 0; }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(61,214,198,.06);
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      margin: 12px 0;
+      color: var(--muted);
+    }
+    .callout.warn { border-left-color: var(--warn); background: rgba(240,180,41,.07); }
+    .callout.bad { border-left-color: var(--bad); background: rgba(240,113,120,.07); }
+    .callout strong { color: var(--text); }
+
+    .checklist label {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .checklist label:last-child { border-bottom: 0; }
+    .checklist input { margin-top: 4px; accent-color: var(--accent); }
+    .checklist label:has(input:checked) { color: var(--dim); text-decoration: line-through; }
+
+    .links a {
+      display: block;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .links a:last-child { border-bottom: 0; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 0.82rem;
+    }
+
+    @media print {
+      #gate { display: none !important; }
+      #app { display: block !important; }
+      .top { position: static; }
+      .nav, .top-actions { display: none; }
+      body { background: white; color: black; }
+      .card, .hero, .table-wrap { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div id="gate">
+    <div class="gate-card">
+      <h1>Bin Cleaning Family Plan</h1>
+      <p>Private working doc for the family DIY trailer build. Enter the PIN to open.</p>
+      <label for="pin">PIN</label>
+      <div class="gate-row">
+        <input id="pin" type="password" inputmode="text" autocomplete="current-password" placeholder="••••••" />
+        <button type="button" id="unlock">Open</button>
+      </div>
+      <div class="gate-err" id="gateErr"></div>
+      <div class="gate-note">Family planning only. PIN keeps casual links private — not bank-grade security. Do not post publicly.</div>
+    </div>
+  </div>
+
+  <div id="app">
+    <header class="top">
+      <div class="top-inner">
+        <div class="brand">
+          <strong>Bin Cleaning Family Plan</strong>
+          <span>DIY trailer · south LA · dad + sons</span>
+        </div>
+        <div class="top-actions">
+          <span class="chip">Path <b>DIY first</b></span>
+          <span class="chip">Budget <b>~$5–6.5k</b></span>
+          <button type="button" class="linkish" id="lockBtn">Lock</button>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Sections">
+        <a href="#brief">Brief</a>
+        <a href="#decision">Decision</a>
+        <a href="#diy">DIY build</a>
+        <a href="#bom">Parts / $</a>
+        <a href="#toolbox">Toolbox</a>
+        <a href="#market">LA market</a>
+        <a href="#targets">Profit targets</a>
+        <a href="#factory">Factory options</a>
+        <a href="#finance">Financing</a>
+        <a href="#vendors">Vendors</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#links">Links</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero" id="brief">
+        <h1>Family trash-bin cleaning business</h1>
+        <p>
+          Working plan to launch a residential (then light commercial) bin cleaning route
+          in the Baton Rouge / south Louisiana area. Default path: <strong>build our own trailer</strong>,
+          prove demand, upgrade equipment only after the route pays.
+        </p>
+        <div class="pills">
+          <span class="pill good">Build our own</span>
+          <span class="pill">No franchise</span>
+          <span class="pill warn">Factory trailer = later</span>
+          <span class="pill">Hot water upgrade later</span>
+        </div>
+      </div>
+
+      <section id="decision">
+        <h2><span class="num">01</span> Locked decisions</h2>
+        <div class="grid">
+          <div class="card span-6">
+            <div class="tag">Do this</div>
+            <h3>Phase 1 — DIY prove-it rig</h3>
+            <ul>
+              <li>Target all-in <span class="price">$5,000–$6,500</span></li>
+              <li>Cold water gas pressure washer (~4 GPM)</li>
+              <li>No diesel heater year one</li>
+              <li>Turbo nozzle + wand (not $4k Bolondi yet)</li>
+              <li>IBC fresh + grey tanks + simple hopper/grate</li>
+              <li>Manual tip — no hydraulics day one</li>
+              <li>Legal grey-water dump (RV dump / approved site)</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <div class="tag">Don't do this yet</div>
+            <h3>Phase 0 traps</h3>
+            <ul>
+              <li>Financing Double Hot (~$935/mo) with zero customers</li>
+              <li>Franchise packages</li>
+              <li>UK gear (Morclean) — US-only</li>
+              <li>Racing under local market price ($15/bin floor)</li>
+              <li>Sprawling service area before density</li>
+              <li>Open hopper as only grey tank while driving</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>Upgrade rule:</strong> hit ~<strong>80 paying homes</strong> on DIY before buying/financing a factory trailer or hot-water pro rig.
+        </div>
+      </section>
+
+      <section id="diy">
+        <h2><span class="num">02</span> How the DIY machine works</h2>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>Four systems</h3>
+            <ol>
+              <li><strong>Tip / hold</strong> — invert or cradle the can over a grate</li>
+              <li><strong>Wash</strong> — gas pressure washer + turbo/wand (spin head later)</li>
+              <li><strong>Fresh water</strong> — 275-gal IBC → filter → washer</li>
+              <li><strong>Grey water</strong> — catch runoff → dirty IBC → RV dump</li>
+            </ol>
+          </div>
+          <div class="card span-6">
+            <h3>Stop workflow</h3>
+            <ol>
+              <li>Roll can to trailer</li>
+              <li>Pre-spray degreaser / Fabuloso-type, short dwell</li>
+              <li>Tip onto grate / cradle</li>
+              <li>Blast interior, wand lips/edges</li>
+              <li>Deodorize (OdoBan-type) on handles + interior</li>
+              <li>Return can; pump hopper → grey when full</li>
+              <li>Dump grey legally end of route / as needed</li>
+            </ol>
+          </div>
+        </div>
+
+        <h3>Reference build (layout, not budget)</h3>
+        <div class="card">
+          <p class="muted" style="margin-top:0">
+            <strong>Brighter Bins</strong> homemade trailer walkthrough — excellent full tour.
+            His all-in was ~<span class="price">$25k</span> (8 GPM Honda, diesel heat, Bolondi head, welded alum hopper).
+            We copy the <em>architecture</em>, strip the premium powertrain.
+          </p>
+          <p><a href="https://youtu.be/uT6QSaCpd7k" target="_blank" rel="noopener">YouTube: The Ultimate Homemade Trash Can Cleaning Trailer</a></p>
+          <div class="table-wrap" style="margin-top:12px">
+            <table>
+              <thead>
+                <tr><th>His part</th><th>His $</th><th>Our Phase 1</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Honda GX690 8 GPM</td><td>~$4,000</td><td>4 GPM gas ~$800–1,200</td></tr>
+                <tr><td>Diesel heater</td><td>~$4,000</td><td>$0 (add later)</td></tr>
+                <tr><td>Bolondi 060 head</td><td>~$4,000</td><td>Turbo + wand</td></tr>
+                <tr><td>Custom alum hopper</td><td>~$2–3,000</td><td>DIY grate / IBC bay $200–600</td></tr>
+                <tr><td>6×14 + axle/brakes</td><td>~$3.5–4k</td><td>5×8 / 5×10 used utility</td></tr>
+                <tr><td>2× 275 IBC</td><td>~$75 ea</td><td>Same</td></tr>
+                <tr><td>Transfer pump + small gen</td><td>~$200</td><td>Same idea</td></tr>
+                <tr><td>Camco RV dump</td><td>cheap</td><td>Same</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>~$25k</strong></td><td><strong>~$5–6.5k</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>Suggested 5×10 layout</h3>
+        <div class="card">
+<pre class="mono" style="margin:0; color: var(--muted); white-space: pre-wrap;">
+TONGUE
+[ fresh IBC ]  [ washer ]  [ hose reel ]
+[ tip cradle + GRATE over catch bay     ]
+[ grey IBC  + transfer pump plumbing     ]
+[ toolbox / chem tray / spare nozzles   ]
+</pre>
+          <p class="muted" style="margin-bottom:0">Keep tongue weight sensible. Strap totes. Mount washer solid (vibration kills pumps).</p>
+        </div>
+      </section>
+
+      <section id="bom">
+        <h2><span class="num">03</span> Parts & budget (Phase 1)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Spec</th><th>Target $</th><th>Where</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Utility trailer</td><td>5×8 or 5×10, title clean; brakes if heavy wet</td><td>1,500–2,500</td><td>Marketplace / CL</td></tr>
+              <tr><td>Gas pressure washer</td><td>≥3.5 GPM (prefer 4+), 3000–4000 PSI</td><td>800–1,200</td><td>HF Predator-class / BE / used commercial</td></tr>
+              <tr><td>Fresh IBC</td><td>275 gal food-grade preferred</td><td>50–150</td><td>Marketplace</td></tr>
+              <tr><td>Grey IBC</td><td>275 gal</td><td>50–120</td><td>Marketplace</td></tr>
+              <tr><td>Plumbing kit</td><td>Bulkheads, valves, filter, hose, clamps</td><td>150–350</td><td>Ace / Amazon / irrigation</td></tr>
+              <tr><td>Hopper / grate / cradle</td><td>DIY steel/alum grate + catch to grey</td><td>200–600</td><td>Fab / scrap</td></tr>
+              <tr><td>Transfer pump + gen</td><td>Cheap transfer + small 110v gen if needed</td><td>150–300</td><td>Amazon / HF</td></tr>
+              <tr><td>Camco dump hose</td><td>RV sewage hose + fittings</td><td>40–80</td><td>Any RV section</td></tr>
+              <tr><td>Hoses / gun / reel</td><td>Match washer rating + turbo nozzle</td><td>100–250</td><td>PW suppliers</td></tr>
+              <tr><td>Chem + PPE starter</td><td>Degreaser, OdoBan, gloves, glasses, boots</td><td>150–300</td><td>Local / Amazon</td></tr>
+              <tr><td>Mounts / straps / misc</td><td>Lumber/steel, chocks, locks</td><td>150–400</td><td>HD / Harbor Freight</td></tr>
+              <tr><td>Contingency</td><td>Fittings you forgot</td><td>300–500</td><td>—</td></tr>
+              <tr><td><strong>Total</strong></td><td></td><td class="price"><strong>~$4.5k–$7.5k</strong><br/>(aim 5–6.5k)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn">
+          <strong>Washer rule:</strong> skip homeowner 2 GPM electrics. Flow (GPM) cleans cans faster than brag PSI. Prefer ~4 GPM gas.
+        </div>
+
+        <h3>Build sequence</h3>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>Week 1 — buy</h3>
+            <ul>
+              <li>Trailer (title, lights, tires)</li>
+              <li>Washer (run before you leave)</li>
+              <li>Two IBCs same day</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Week 2 — fab</h3>
+            <ul>
+              <li>Mount washer solid</li>
+              <li>Strap totes, plumb fresh → filter → washer</li>
+              <li>Grate + drain to grey</li>
+              <li>Tip cradle for 96-gal cans</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Week 3 — test</h3>
+            <ul>
+              <li>Practice on own / neighbor cans</li>
+              <li>Time a full clean; fix leaks</li>
+              <li>Check wet weight vs tow rating</li>
+              <li>Dry-run dump site with full grey</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Week 4 — soft launch</h3>
+            <ul>
+              <li>One neighborhood only</li>
+              <li>Door hangers + simple signup</li>
+              <li>Price near market (see LA market)</li>
+              <li>Before/after photos every stop</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="toolbox">
+        <h2><span class="num">04</span> Trailer toolbox</h2>
+        <p class="muted">Two totes + one lockable box: <strong>Clean</strong> vs <strong>Gross</strong>. Never mix dump gear with clean towels.</p>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>A. PPE</h3>
+            <ul>
+              <li>Nitrile gloves (bulk) + heavy rubber gloves</li>
+              <li>Safety glasses, hearing protection</li>
+              <li>Waterproof boots / overboots, rain pants</li>
+              <li>Hand cleaner, sanitizer, sunscreen, bug spray</li>
+              <li>First aid kit, crew water</li>
+            </ul>
+            <h3>B. Can tools</h3>
+            <ul>
+              <li>Trash grabbers (2)</li>
+              <li>Plastic razor scrapers + spare blades</li>
+              <li>Stiff + soft brushes, plastic/metal scrapers</li>
+              <li>Microfibers (clean/dirty bags), paper towels</li>
+              <li>Pump sprayer, contractor bags, handle wipes</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>C. Chemicals</h3>
+            <ul>
+              <li>Degreaser / pre-treat</li>
+              <li>OdoBan-type disinfectant-deodorizer</li>
+              <li>Labeled bottles + mix ratio card</li>
+              <li>Secondary containment tray</li>
+            </ul>
+            <h3>D. Washer spares</h3>
+            <ul>
+              <li>Nozzles 0/15/25/40 + turbo</li>
+              <li>O-rings, QDs, thread tape, clamps</li>
+              <li>Spark plug, oil, funnel, fuses, air filter</li>
+              <li>Hose repair bits</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>E. Water / dump</h3>
+            <ul>
+              <li>Extra garden hose, spare gaskets/fittings</li>
+              <li>Inlet filter spare, transfer pump</li>
+              <li>Camco RV dump hose + dump-only gloves</li>
+              <li>5-gal bucket, funnel, absorbent pads</li>
+            </ul>
+            <h3>F. Trailer / tools</h3>
+            <ul>
+              <li>Tire gauge, 12v inflator, lug wrench</li>
+              <li>Spare bulb plan, tape, zip ties</li>
+              <li>Basic sockets/wrenches/pliers/knife</li>
+              <li>Flashlight, wheel chocks (2), straps (4+)</li>
+              <li>Job-box lock, coupler lock, 2 cones</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>G. Business kit</h3>
+            <ul>
+              <li>Phone mount, power bank</li>
+              <li>Route list backup</li>
+              <li>Door hangers, cards, QR stickers</li>
+              <li>Sharpie, notepad, optional “cleaned today” tags</li>
+            </ul>
+            <h3>H. Gross tote only</h3>
+            <ul>
+              <li>Dump hose, dump gloves, grey gear</li>
+              <li>Sealed — never with clean chem lids/towels</li>
+            </ul>
+            <div class="callout" style="margin-bottom:0">
+              <strong>Buy first:</strong> PPE → grabbers/scrapers → sprayer+chem → nozzles → towels/bags → tools → chocks/straps → dump hose → first aid → hangers.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="market">
+        <h2><span class="num">05</span> LA market pricing</h2>
+        <div class="card">
+          <p class="muted" style="margin-top:0">
+            Local competitor benchmark:
+            <a href="https://www.squeakycleancansla.com/" target="_blank" rel="noopener">Squeaky Clean Cans LA</a>
+            · (985) 402-2680 · serves Baton Rouge and surrounding towns.
+            Hot-wash marketing, residential signup, commercial quotes.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Plan</th><th>Their price</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Monthly — 1 bin</td><td class="price">$15/mo</td></tr>
+                <tr><td>Monthly — 2 bins</td><td class="price">$22/mo</td></tr>
+                <tr><td>Monthly — each add</td><td>+$10</td></tr>
+                <tr><td>Bi-monthly — up to 2 bins</td><td>$35</td></tr>
+                <tr><td>Quarterly — up to 2 bins</td><td>$45</td></tr>
+                <tr><td>One-time — up to 2 bins</td><td>$60</td></tr>
+                <tr><td>Commercial dumpsters</td><td>Call for quote</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout" style="margin-bottom:0; margin-top:12px">
+            <strong>Pricing stance:</strong> market already accepts ~$15–22/mo. Don’t race under $15.
+            Prefer monthly 2-bin accounts over cheap quarterly-only. Win on show-up rate + before/after proof.
+            Test band: match them or trial slightly higher if service is tighter.
+          </div>
+        </div>
+      </section>
+
+      <section id="targets">
+        <h2><span class="num">06</span> Profit & growth targets</h2>
+        <p class="muted">
+          Model assumes DIY lean fixed ~$675/mo (ins/fuel/chem/dump/mkt) and blended ARPU ~$20/home
+          (mix of $15 one-bin and $22 two-bin monthly). Numbers are planning targets, not guarantees.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Stage</th><th>Homes</th><th>Outcome</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Alive</strong></td><td>~40</td><td>Covers fuel/chem/insurance</td></tr>
+              <tr><td><strong>Real</strong></td><td>~90</td><td>+ ~$1k/mo family draw</td></tr>
+              <tr><td><strong>Solid</strong></td><td>~145</td><td>+ ~$2k/mo</td></tr>
+              <tr><td><strong>Strong</strong></td><td>~200</td><td>+ ~$3k/mo trajectory</td></tr>
+              <tr><td><strong>Scale</strong></td><td>~300+</td><td>+ ~$5k/mo / 2nd rig talk</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid" style="margin-top:12px">
+          <div class="card span-6">
+            <h3>DIY payback (after fixed)</h3>
+            <ul>
+              <li>~50 homes → ~$245/mo → ~24 mo payback</li>
+              <li>~80 homes → ~$800/mo → ~7–8 mo</li>
+              <li>~120 homes → ~$1,500/mo → ~4 mo</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Roadmap</h3>
+            <ul>
+              <li><strong>Wks 1–4:</strong> build · 15–25 homes · one neighborhood</li>
+              <li><strong>Mo 2–3:</strong> density · 50 homes · process tight</li>
+              <li><strong>Mo 4–6:</strong> 80–100 homes · light commercial · DIY paid back</li>
+              <li><strong>Mo 6–12:</strong> 120–150 → then used/pro/hot upgrade</li>
+              <li><strong>Yr 1–2:</strong> ~200 homes or 150 + commercial book</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout warn">
+          <strong>If Double Hot financed (~$935/mo):</strong> need ~90 homes just for trailer+ops, ~200 for a real $2k draw.
+          Same revenue, more pressure. Factory hot rig = Stage 2–3 tool.
+        </div>
+        <h3>Operating rules</h3>
+        <div class="card">
+          <ul>
+            <li>Density &gt; radius — dominate streets before expanding</li>
+            <li>Monthly &gt; quarterly for cash quality</li>
+            <li>Track churn; aim to keep it low with consistent trash-day routing</li>
+            <li>DIY route day: often ~35–55 stops when dense (speed improves with practice)</li>
+            <li>Commercial (apts/HOA/restaurants) after ~50 residential</li>
+            <li>Grey water legal every single day</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="factory">
+        <h2><span class="num">07</span> Factory options (later / compare)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Option</th><th>Money</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>DIY Phase 1</strong></td><td>~$5–6.5k cash</td><td>Prove demand, learn ops</td></tr>
+              <tr><td>The Bin Trailer Single Cold</td><td>~$29,999 · ~$603/mo</td><td>First factory rig if financing</td></tr>
+              <tr><td>The Bin Trailer Double Hot</td><td>~$45,999 · ~$935/mo</td><td>Scale / hot commercial</td></tr>
+              <tr><td>Kraken Eco / pods / combos</td><td>~$10k–$45k</td><td>US maker ladder</td></tr>
+              <tr><td>Sparkling Bins / GCC Flex</td><td>Quote / ~$50k+</td><td>Turnkey + support heavy</td></tr>
+              <tr><td>Used pro trailers</td><td>Often $30k–$55k</td><td>FB group + maker take-backs</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Double Hot snapshot</h3>
+          <p class="muted">Page: <a href="https://thebintrailer.com/double-hot/" target="_blank" rel="noopener">thebintrailer.com/double-hot</a></p>
+          <ul>
+            <li>$45,999 (MSRP $49,999), wrap included on promo</li>
+            <li>Tandem axle, electric brakes</li>
+            <li>Hot + cold, Beckett burner ~200°F+</li>
+            <li>Up to ~4,000 PSI, Honda GX, 360° heads</li>
+            <li>275 gal (upgrade ~330), Smart Lift</li>
+          </ul>
+          <p class="muted" style="margin-bottom:0">Great route machine. Wrong first buy with zero customers.</p>
+        </div>
+      </section>
+
+      <section id="finance">
+        <h2><span class="num">08</span> Financing notes (Double Hot example)</h2>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>How their teaser works</h3>
+            <ul>
+              <li>Lender: <strong>Geneva Capital</strong> (not the trailer company)</li>
+              <li>Soft app: <a href="https://thebintrailer.gogc.com/" target="_blank" rel="noopener">thebintrailer.gogc.com</a></li>
+              <li>Estimates = <strong>60-month</strong>, qualified credit</li>
+              <li>~$935/mo on $45,999 ≈ ~8% APR, $0 down if strong file</li>
+              <li>Not guaranteed — credit moves APR/payment</li>
+              <li>Startups: may want FICO ~650+, spouse on app if &lt;2 yrs biz</li>
+              <li>Tax + shipping often extra</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Ask in writing before deposit</h3>
+            <ul>
+              <li>Exact term & APR tier</li>
+              <li>Down payment required?</li>
+              <li>Tax + freight inside payment?</li>
+              <li>Total of payments</li>
+              <li>Early payoff penalty?</li>
+              <li>Title / lien holder</li>
+              <li>Build → delivery lead time to our ZIP</li>
+              <li>Warranty: burner, pump, lift, trailer</li>
+              <li>Wet weight + recommended tow vehicle</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout bad">
+          <strong>Family call:</strong> do not soft-commit to $935/mo until DIY has proven ~80 homes or there is a hard reason factory is required (e.g. contracted HOA that demands pro gear).
+        </div>
+      </section>
+
+      <section id="vendors">
+        <h2><span class="num">09</span> Vendor & used map (US)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Company</th><th>Notes</th><th>Link</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Kraken Industries (OK)</td><td>~$10k–45k ladder, pods/trailers</td><td><a href="https://krakenindustries.biz/" target="_blank" rel="noopener">krakenindustries.biz</a> · 405-512-2261</td></tr>
+              <tr><td>The Bin Trailer (FL)</td><td>Single Cold / Double Hot</td><td><a href="https://thebintrailer.com/" target="_blank" rel="noopener">thebintrailer.com</a></td></tr>
+              <tr><td>Sparkling Bins</td><td>Turnkey SB1/SB2, quote</td><td><a href="https://www.sparklingbinsbusiness.com/" target="_blank" rel="noopener">sparklingbinsbusiness.com</a></td></tr>
+              <tr><td>GCC / Flex (UT)</td><td>~$50k trailer; DIY kit ~$25k parts</td><td><a href="https://garbagecancleaning.com/" target="_blank" rel="noopener">garbagecancleaning.com</a></td></tr>
+              <tr><td>Trash Can Cleaners (TX)</td><td>Custom + DIY parts advice</td><td><a href="https://thetrashcancleaners.com/" target="_blank" rel="noopener">thetrashcancleaners.com</a> · 210-971-4980</td></tr>
+              <tr><td>Atomic Bin Systems (PA)</td><td>Kits ~$13.5–17.5k</td><td><a href="https://www.atomicbinsystems.com/" target="_blank" rel="noopener">atomicbinsystems.com</a></td></tr>
+              <tr><td>Hot & Mighty (IN)</td><td>Heads / full builds</td><td><a href="https://www.hotandmightydirect.com/" target="_blank" rel="noopener">hotandmightydirect.com</a> · 800-897-7515</td></tr>
+              <tr><td>TBCD</td><td>Premium + sometimes used</td><td><a href="https://www.trashbincleanersdirect.com/" target="_blank" rel="noopener">trashbincleanersdirect.com</a> · 877-699-0755</td></tr>
+              <tr><td>Rhino Services (SD)</td><td>Custom duals</td><td><a href="https://www.rhinoservicesllc.com/" target="_blank" rel="noopener">rhinoservicesllc.com</a> · 605-881-4263</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Used hunting</h3>
+          <ul>
+            <li>Facebook group: <strong>Trash Bin Cleaning</strong></li>
+            <li>Marketplace: “trash bin cleaning trailer”, “can cleaning trailer”</li>
+            <li>Ask makers for trade-ins / demos (GCC, TBCD, etc.)</li>
+            <li>Inspect: hours, tanks, lift, title, wet weight, grey system legality</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2><span class="num">10</span> Family checklist</h2>
+        <p class="muted">Checks save in this browser only (local). Each person can tick on their phone.</p>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>Before buying parts</h3>
+            <div class="checklist" data-key="prebuy">
+              <label><input type="checkbox"> Confirm tow vehicle capacity (wet weight realistic)</label>
+              <label><input type="checkbox"> Decide open utility vs enclosed</label>
+              <label><input type="checkbox"> Confirm welder / fab capability vs bolt-only</label>
+              <label><input type="checkbox"> Hard budget cap agreed ($5k / $6.5k / stretch)</label>
+              <label><input type="checkbox"> Find legal grey-water dump site near routes</label>
+              <label><input type="checkbox"> Watch Brighter Bins video end-to-end</label>
+            </div>
+          </div>
+          <div class="card span-6">
+            <h3>Build</h3>
+            <div class="checklist" data-key="build">
+              <label><input type="checkbox"> Trailer titled, lights, tires OK</label>
+              <label><input type="checkbox"> Washer mounted + tested</label>
+              <label><input type="checkbox"> Fresh + grey IBCs strapped + plumbed</label>
+              <label><input type="checkbox"> Filter on fresh feed</label>
+              <label><input type="checkbox"> Hopper/grate drains to grey</label>
+              <label><input type="checkbox"> Tip cradle works for 96-gal cans</label>
+              <label><input type="checkbox"> Transfer pump + dump hose working</label>
+              <label><input type="checkbox"> Toolbox Phase-1 kit loaded</label>
+            </div>
+          </div>
+          <div class="card span-6">
+            <h3>Business launch</h3>
+            <div class="checklist" data-key="biz">
+              <label><input type="checkbox"> LLC / basic structure decided</label>
+              <label><input type="checkbox"> Insurance quotes (GL + commercial auto/trailer)</label>
+              <label><input type="checkbox"> Pricing locked near LA market</label>
+              <label><input type="checkbox"> Door hangers / cards / simple signup</label>
+              <label><input type="checkbox"> First neighborhood map picked</label>
+              <label><input type="checkbox"> 15–25 homes soft-launch target</label>
+            </div>
+          </div>
+          <div class="card span-6">
+            <h3>Upgrade gates</h3>
+            <div class="checklist" data-key="upgrade">
+              <label><input type="checkbox"> 50 homes — process stable</label>
+              <label><input type="checkbox"> 80 homes — DIY mostly paid back</label>
+              <label><input type="checkbox"> Only then: hot water / better head / used pro</label>
+              <label><input type="checkbox"> 120–150 homes: factory Dual/Hot conversation OK</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="links">
+        <h2><span class="num">11</span> Links</h2>
+        <div class="grid">
+          <div class="card span-6 links">
+            <h3>Core</h3>
+            <a href="https://youtu.be/uT6QSaCpd7k" target="_blank" rel="noopener">Brighter Bins DIY trailer video</a>
+            <a href="https://www.squeakycleancansla.com/" target="_blank" rel="noopener">Squeaky Clean Cans LA (local pricing)</a>
+            <a href="https://thebintrailer.com/double-hot/" target="_blank" rel="noopener">Bin Trailer Double Hot</a>
+            <a href="https://thebintrailer.com/single-cold/" target="_blank" rel="noopener">Bin Trailer Single Cold</a>
+            <a href="https://thebintrailer.com/financing-available/" target="_blank" rel="noopener">Bin Trailer financing (Geneva)</a>
+            <a href="https://thebintrailer.gogc.com/" target="_blank" rel="noopener">Geneva soft app</a>
+          </div>
+          <div class="card span-6 links">
+            <h3>Makers / parts</h3>
+            <a href="https://krakenindustries.biz/" target="_blank" rel="noopener">Kraken Industries</a>
+            <a href="https://thetrashcancleaners.com/do-it-yourself-diy-bin-cleaning-parts/" target="_blank" rel="noopener">Trash Can Cleaners — DIY parts</a>
+            <a href="https://www.atomicbinsystems.com/" target="_blank" rel="noopener">Atomic Bin Systems</a>
+            <a href="https://garbagecancleaning.com/diy-trash-bin-cleaning-kit-for-sale/" target="_blank" rel="noopener">GCC DIY kit ($$$ — later)</a>
+            <a href="https://www.sparklingbinsbusiness.com/" target="_blank" rel="noopener">Sparkling Bins</a>
+            <a href="https://www.hotandmightydirect.com/" target="_blank" rel="noopener">Hot & Mighty</a>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        Family working document · not public marketing · not legal/financial advice ·
+        re-verify prices, dump rules, insurance, and lender terms before spending money ·
+        PIN gate is privacy, not cryptography-grade security ·
+        Updated for DIY-first south LA launch plan.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const PIN_HASH = "8ac07f46bddd2bb94cd65982e64a8879b00a68099b60cc713e234676f21664ff";
+      const KEY = "binplan_ok_v1";
+
+      const gate = document.getElementById("gate");
+      const app = document.getElementById("app");
+      const pinInput = document.getElementById("pin");
+      const err = document.getElementById("gateErr");
+
+      async function sha256hex(text) {
+        const data = new TextEncoder().encode(text);
+        const buf = await crypto.subtle.digest("SHA-256", data);
+        return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function openApp() {
+        gate.classList.add("hidden");
+        app.classList.add("show");
+        sessionStorage.setItem(KEY, "1");
+      }
+
+      function lockApp() {
+        sessionStorage.removeItem(KEY);
+        app.classList.remove("show");
+        gate.classList.remove("hidden");
+        pinInput.value = "";
+        err.textContent = "";
+        pinInput.focus();
+      }
+
+      async function tryUnlock() {
+        err.textContent = "";
+        const val = (pinInput.value || "").trim();
+        if (!val) {
+          err.textContent = "Enter the PIN.";
+          return;
+        }
+        const hash = await sha256hex(val);
+        if (hash === PIN_HASH) {
+          openApp();
+        } else {
+          err.textContent = "Wrong PIN.";
+          pinInput.select();
+        }
+      }
+
+      document.getElementById("unlock").addEventListener("click", tryUnlock);
+      pinInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") tryUnlock();
+      });
+      document.getElementById("lockBtn").addEventListener("click", lockApp);
+
+      if (sessionStorage.getItem(KEY) === "1") openApp();
+      else pinInput.focus();
+
+      // checklist persistence
+      document.querySelectorAll(".checklist").forEach((box) => {
+        const key = "binplan_check_" + box.dataset.key;
+        let state = {};
+        try { state = JSON.parse(localStorage.getItem(key) || "{}"); } catch (_) {}
+        box.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+          cb.checked = !!state[i];
+          cb.addEventListener("change", () => {
+            const next = {};
+            box.querySelectorAll('input[type="checkbox"]').forEach((c, j) => { next[j] = c.checked; });
+            localStorage.setItem(key, JSON.stringify(next));
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
